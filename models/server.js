@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { dbConnection } = require('../database/config');
 const fileUpload = require('express-fileupload');
+const { default: db } = require('../database/connectionmysql');
 
 class Server {
     constructor() {
@@ -14,13 +15,25 @@ class Server {
             productos: '/api/productos',
             uploads: '/api/uploads'
         };
-        this.conectarDB();
+        this.conectarDB(); //conexion a mongo
+        //this.dbConnectionMySQL(); //esto es para iniciar la conexion a mysql
+
         this.middlewares();
         this.routes();
     }
 
     async conectarDB() {
         await dbConnection();
+    }
+
+    async dbConnectionMySQL() {
+        try {
+            await db.authenticate();
+            console.log('Database MySQL online');
+        } catch (error) {
+            console.log(error);
+            throw new Error(error);
+        }
     }
 
     middlewares() {

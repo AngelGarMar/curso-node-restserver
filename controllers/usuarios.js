@@ -1,8 +1,15 @@
 const {request,response} = require('express');
 const bcryptjs = require('bcryptjs');
 const Usuario = require('../models/usuario');
+const UsuarioMySQL = require('../models/usuariomysql');
 
 const usuariosGet = async(req = request, res = response) => {
+    /*
+    SOLO PARA MYSQL
+    const usuarioss = await UsuarioMySQL.findAll();
+    const usuario = await UsuarioMySQL.findByPk(id);
+    */
+
     //const {q, nombre = 'No name', apikey} = req.query; //para los "url?nombre=hola&dato=1"
     const {limite = 5, desde = 0} = req.query;
     const query = {estado: true};
@@ -22,6 +29,12 @@ const usuariosGet = async(req = request, res = response) => {
     });
 };
 const usuariosPut = async(req, res = response) => {
+    /*
+    SOLO PARA MYSQL
+    const usuarioss = await UsuarioMySQL.findByPk(id);
+    await usuarioss.update(body);
+    */
+
     const {id} = req.params.id; //para los "url/12"
     const {_id, password, google, correo, ...resto} = req.body;
     if (password) {
@@ -34,6 +47,12 @@ const usuariosPut = async(req, res = response) => {
     );
 };
 const usuariosPost = async(req, res = response) => {
+    /*
+    SOLO PARA MYSQL
+    const usuarioss = UsuarioMySQL(body);
+    await usuarioss.save();
+    */
+
     const {nombre, correo, password, role} = req.body;
     const usuario = new Usuario({nombre, correo, password, role});
     const salt = bcryptjs.genSaltSync();
@@ -45,6 +64,14 @@ const usuariosPost = async(req, res = response) => {
     });
 };
 const usuariosDelete = async(req, res = response) => {
+    /*
+    SOLO PARA MYSQL
+    const usuarioss = await UsuarioMySQL.findByPk(id);
+    validar si existe
+    await usuarioss.destroy(); //eliminacion fisica
+    await usuarioss.update({estado: false}); //eliminacion logica
+    */
+
     const {id} = req.params;
     const usuario = await Usuario.findByIdAndUpdate(id, {estado: false});
     res.json(usuario);
